@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover" />
+    <title>MİD-DEC</title>
+
+    <!-- Apple PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="MİD-DEC" />
+
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/assets/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="167x167" href="/assets/apple-touch-icon.png" />
+
+    <!-- Apple Startup Images (Splash Screens) -->
+    <!-- iPhone 15 Pro Max, 14 Pro Max, 13 Pro Max, 12 Pro Max -->
+    <link rel="apple-touch-startup-image" href="/assets/splash.png"
+        media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" />
+    <!-- iPhone 15 Pro, 15, 14 Pro -->
+    <link rel="apple-touch-startup-image" href="/assets/splash.png"
+        media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" />
+    <!-- iPhone 14 Plus, 13 Pro Max, 12 Pro Max -->
+    <link rel="apple-touch-startup-image" href="/assets/splash.png"
+        media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" />
+    <!-- iPhone 14, 13 Pro, 13, 12 Pro, 12 -->
+    <link rel="apple-touch-startup-image" href="/assets/splash.png"
+        media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" />
+    <!-- iPhone 13 mini, 12 mini, 11 Pro, XS, X -->
+    <link rel="apple-touch-startup-image" href="/assets/splash.png"
+        media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" />
+    <!-- iPhone 11 Pro Max, XS Max -->
+    <link rel="apple-touch-startup-image" href="/assets/splash.png"
+        media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" />
+    <!-- iPhone 11, XR -->
+    <link rel="apple-touch-startup-image" href="/assets/splash.png"
+        media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" />
+    <!-- iPhone 8 Plus, 7 Plus, 6s Plus, 6 Plus -->
+    <link rel="apple-touch-startup-image" href="/assets/splash.png"
+        media="(device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)" />
+    <!-- iPhone 8, 7, 6s, 6, SE 2nd Gen -->
+    <link rel="apple-touch-startup-image" href="/assets/splash.png"
+        media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" />
+
+    <style>
+        /* Prevent scrolling on body and handle safe areas */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #ffffff;
+            overscroll-behavior: none;
+            /* Native look: no bounce */
+        }
+
+        #root {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            /* Allow content to scroll */
+            -webkit-overflow-scrolling: touch;
+            /* Smooth scrolling for iOS Safari */
+        }
+
+        /* Safe area support for iOS Notch and Home Indicator */
+        body {
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+</body>
+
+</html>

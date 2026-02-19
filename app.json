@@ -1,0 +1,35 @@
+{
+    "expo": {
+        "name": "MİD-DEC",
+        "slug": "mid-dec-app",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "userInterfaceStyle": "light",
+        "assetBundlePatterns": [
+            "**/*"
+        ],
+        "ios": {
+            "supportsTablet": true
+        },
+        "android": {
+            "adaptiveIcon": {
+                "backgroundColor": "#ffffff"
+            }
+        },
+        "web": {
+            "bundler": "metro",
+            "description": "A medical risk assessment application for healthcare professionals.",
+            "themeColor": "#81B7C3",
+            "backgroundColor": "#ffffff",
+            "display": "standalone",
+            "pwa": {
+                "apple": {
+                    "mobileWebAppCapable": "yes",
+                    "barStyle": "black-translucent",
+                    "touchIcon": "./assets/apple-touch-icon.png",
+                    "startupImage": "./assets/splash.png"
+                }
+            }
+        }
+    }
+}
