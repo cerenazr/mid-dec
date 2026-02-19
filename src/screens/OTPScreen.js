@@ -10,6 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import COLORS from '../constants/colors';
+import WaveBackground from '../components/WaveBackground';
 
 export default function OTPScreen({ navigation }) {
     const [data, setData] = useState({
@@ -85,6 +86,9 @@ export default function OTPScreen({ navigation }) {
                     </TouchableOpacity>
                 </View>
             </View>
+            <View style={styles.bottomWave}>
+                <WaveBackground color={COLORS.primary} inverted={false} />
+            </View>
         </SafeAreaView>
     );
 }
@@ -96,7 +100,7 @@ const styles = StyleSheet.create({
     },
     header: {
         paddingHorizontal: 22,
-        paddingTop: 20,
+        paddingTop: 10,
     },
     backButton: {
         width: 41,
@@ -112,20 +116,25 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: 30,
         paddingTop: 30,
+        alignItems: 'center',
     },
     title: {
         fontSize: 30,
-        fontWeight: '700',
+        fontWeight: '800',
         color: COLORS.textHeader,
-        marginBottom: 10,
+        marginBottom: 12,
+        textAlign: 'center',
     },
     subTitle: {
-        fontSize: 16,
+        fontSize: 14,
         color: COLORS.textSub,
-        lineHeight: 24,
+        lineHeight: 22,
         marginBottom: 30,
+        textAlign: 'center',
+        paddingHorizontal: 10,
     },
     form: {
+        width: '100%',
         gap: 15,
     },
     inputContainer: {
@@ -151,7 +160,7 @@ const styles = StyleSheet.create({
     submitButtonText: {
         color: COLORS.white,
         fontSize: 15,
-        fontWeight: '600',
+        fontWeight: '700',
     },
     footer: {
         flexDirection: 'row',
@@ -159,13 +168,22 @@ const styles = StyleSheet.create({
         marginTop: 50,
     },
     footerText: {
-        fontSize: 15,
+        fontSize: 14,
         fontWeight: '500',
         color: COLORS.textSub,
     },
     footerLink: {
-        fontSize: 15,
+        fontSize: 14,
         fontWeight: '700',
         color: COLORS.primaryDark,
+    },
+    bottomWave: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: -1,
+        height: 100,
+        opacity: 0.5,
     },
 });

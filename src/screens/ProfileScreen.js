@@ -27,45 +27,63 @@ const ProfileOption = ({ icon, label, onPress, isDestructive }) => (
 export default function ProfileScreen({ navigation }) {
     return (
         <SafeAreaView style={styles.container}>
-            <WaveBackground color={COLORS.primary} />
             <View style={styles.header}>
-                <Text style={styles.headerTitle}>Profile</Text>
+                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                    <Ionicons name="chevron-back" size={24} color={COLORS.textHeader} />
+                </TouchableOpacity>
+                <Text style={styles.headerTitle}>User Profile</Text>
+                <View style={{ width: 40 }} />
             </View>
 
             <ScrollView contentContainerStyle={styles.content}>
                 <View style={styles.profileHeader}>
                     <View style={styles.avatarContainer}>
-                        <Ionicons name="person" size={40} color={COLORS.white} />
+                        <Image
+                            source={require('../../assets/logo.png')}
+                            style={styles.avatarLogo}
+                            resizeMode="contain"
+                        />
                     </View>
                     <Text style={styles.name}>Dr. Sarah Wilson</Text>
-                    <Text style={styles.role}>Obstetrician</Text>
+                    <Text style={styles.role}>Healthcare Professional</Text>
+                </View>
+
+                <View style={styles.infoSection}>
+                    <View style={styles.infoRow}>
+                        <Text style={styles.infoLabel}>Email</Text>
+                        <Text style={styles.infoValue}>sarah.wilson@hospital.com</Text>
+                    </View>
+                    <View style={styles.infoRow}>
+                        <Text style={styles.infoLabel}>Institution</Text>
+                        <Text style={styles.infoValue}>City Hospital Group</Text>
+                    </View>
+                    <View style={styles.infoRow}>
+                        <Text style={styles.infoLabel}>Phone</Text>
+                        <Text style={styles.infoValue}>+90 555 123 4567</Text>
+                    </View>
                 </View>
 
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Account Settings</Text>
-                    <ProfileOption icon="person-outline" label="Edit Profile" />
+                    <Text style={styles.sectionTitle}>App Settings</Text>
                     <ProfileOption icon="notifications-outline" label="Notifications" />
-                    <ProfileOption icon="lock-closed-outline" label="Security" />
+                    <ProfileOption icon="shield-checkmark-outline" label="Privacy & Security" />
+                    <ProfileOption icon="help-circle-outline" label="Help Support" />
                 </View>
 
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Support</Text>
-                    <ProfileOption icon="help-circle-outline" label="Help & FAQ" />
-                    <ProfileOption icon="information-circle-outline" label="About App" />
-                </View>
-
-                <View style={styles.section}>
-                    <ProfileOption
-                        icon="log-out-outline"
-                        label="Log Out"
-                        isDestructive
-                        onPress={() => navigation.reset({
-                            index: 0,
-                            routes: [{ name: 'Welcome' }],
-                        })}
-                    />
-                </View>
+                <TouchableOpacity
+                    style={styles.logoutButton}
+                    onPress={() => navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'Welcome' }],
+                    })}
+                >
+                    <Ionicons name="log-out-outline" size={20} color="#EA4335" />
+                    <Text style={styles.logoutText}>Log Out Account</Text>
+                </TouchableOpacity>
             </ScrollView>
+            <View style={styles.bottomWave}>
+                <WaveBackground color={COLORS.primary} inverted={false} />
+            </View>
         </SafeAreaView>
     );
 }
@@ -76,63 +94,102 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.white,
     },
     header: {
-        paddingHorizontal: 22,
-        paddingTop: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 15,
+        paddingTop: 10,
         paddingBottom: 10,
+    },
+    backButton: {
+        width: 40,
+        height: 40,
+        justifyContent: 'center',
         alignItems: 'center',
     },
     headerTitle: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: '700',
         color: COLORS.textHeader,
     },
     content: {
-        padding: 22,
+        paddingHorizontal: 22,
+        paddingBottom: 100,
     },
     profileHeader: {
         alignItems: 'center',
+        marginTop: 10,
         marginBottom: 30,
     },
     avatarContainer: {
-        width: 80,
-        height: 80,
-        borderRadius: 40,
-        backgroundColor: COLORS.assessment, // Using primary color
+        width: 90,
+        height: 90,
+        borderRadius: 45,
+        backgroundColor: '#F0F7F9',
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 15,
-        borderWidth: 4,
-        borderColor: '#E1F5FE',
-        backgroundColor: COLORS.primary
+        borderWidth: 1,
+        borderColor: '#E8ECF4',
+    },
+    avatarLogo: {
+        width: 60,
+        height: 60,
     },
     name: {
         fontSize: 22,
-        fontWeight: '700',
+        fontWeight: '800',
         color: COLORS.textHeader,
     },
     role: {
         fontSize: 14,
         color: COLORS.textSub,
-        marginTop: 5,
+        marginTop: 4,
+        fontWeight: '500',
+    },
+    infoSection: {
+        backgroundColor: '#F8F9FA',
+        borderRadius: 16,
+        padding: 20,
+        marginBottom: 30,
+        borderWidth: 1,
+        borderColor: '#E8ECF4',
+    },
+    infoRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingVertical: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: 'rgba(232, 236, 244, 0.5)',
+    },
+    infoLabel: {
+        fontSize: 14,
+        color: COLORS.textSub,
+        fontWeight: '600',
+    },
+    infoValue: {
+        fontSize: 14,
+        color: COLORS.textHeader,
+        fontWeight: '700',
     },
     section: {
-        marginBottom: 25,
+        marginBottom: 20,
     },
     sectionTitle: {
-        fontSize: 14,
-        fontWeight: '600',
+        fontSize: 13,
+        fontWeight: '700',
         color: COLORS.textSub,
         marginBottom: 15,
         textTransform: 'uppercase',
-        letterSpacing: 1,
+        letterSpacing: 1.2,
     },
     optionItem: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingVertical: 12,
+        paddingVertical: 14,
         borderBottomWidth: 1,
-        borderBottomColor: '#F5F5F5',
+        borderBottomColor: '#F8F9FA',
     },
     optionLeft: {
         flexDirection: 'row',
@@ -140,22 +197,40 @@ const styles = StyleSheet.create({
         gap: 15,
     },
     iconBox: {
-        width: 36,
-        height: 36,
-        borderRadius: 8,
+        width: 38,
+        height: 38,
+        borderRadius: 10,
         backgroundColor: 'rgba(129, 183, 195, 0.1)',
         justifyContent: 'center',
         alignItems: 'center',
     },
-    iconBoxDestructive: {
-        backgroundColor: 'rgba(234, 67, 53, 0.1)',
-    },
     optionLabel: {
-        fontSize: 16,
-        fontWeight: '500',
+        fontSize: 15,
+        fontWeight: '600',
         color: COLORS.textHeader,
     },
-    textDestructive: {
+    logoutButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(234, 67, 53, 0.05)',
+        paddingVertical: 16,
+        borderRadius: 14,
+        marginTop: 20,
+        gap: 10,
+    },
+    logoutText: {
         color: '#EA4335',
+        fontSize: 15,
+        fontWeight: '700',
+    },
+    bottomWave: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: -1,
+        height: 100,
+        opacity: 0.5,
     },
 });

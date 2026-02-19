@@ -6,21 +6,32 @@ import {
     FlatList,
     TouchableOpacity,
     ActivityIndicator,
-    RefreshControl
+    RefreshControl,
+    Image
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import COLORS from '../constants/colors';
 import WaveBackground from '../components/WaveBackground';
+import CustomGauge from '../components/CustomGauge';
 import { db } from '../services/firebaseConfig';
 import { collection, query, orderBy, onSnapshot, limit } from 'firebase/firestore';
 
 const PatientCard = ({ item }) => (
     <View style={styles.card}>
         <View style={styles.cardHeader}>
-            <View>
-                <Text style={styles.patientName}>{item.patientName || 'Unknown Patient'}</Text>
-                <Text style={styles.archiveNo}>Archive: {item.archiveNo || '-'}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                <CustomGauge
+                    percentage={item.result?.score || 0}
+                    size={45}
+                    strokeWidth={5}
+                    fontSize={10}
+                    riskLevel={item.result?.category || 'Unknown'}
+                />
+                <View>
+                    <Text style={styles.patientName}>{item.patientName || 'Unknown Patient'}</Text>
+                    <Text style={styles.archiveNo}>ID: {item.archiveNo || '-'}</Text>
+                </View>
             </View>
             <View style={[
                 styles.riskBadge,
@@ -36,7 +47,7 @@ const PatientCard = ({ item }) => (
         </View>
 
         <View style={styles.cardDetails}>
-            <Text style={styles.detailText}>Score: %{item.result?.score || 0}</Text>
+            {/* Removed Score: %{item.result?.score || 0} */}
             <Text style={styles.detailText}>Date: {item.timestamp ? new Date(item.timestamp.seconds * 1000).toLocaleDateString() : 'Just now'}</Text>
         </View>
     </View>
@@ -82,19 +93,32 @@ export default function HomeScreen({ navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
-            <WaveBackground color={COLORS.primary} />
             <View style={styles.header}>
-                <View>
-                    <Text style={styles.greeting}>Hello, Doctor</Text>
-                    <Text style={styles.subtitle}>Welcome back</Text>
-                </View>
-                <TouchableOpacity style={styles.notificationButton}>
-                    <Ionicons name="notifications-outline" size={24} color={COLORS.textHeader} />
+                <Image
+                    source={require('../../assets/logo.png')}
+                    style={styles.headerLogo}
+                    resizeMode="contain"
+                />
+                <TouchableOpacity
+                    style={styles.profileCircle}
+                    onPress={() => navigation.navigate('Profile')}
+                >
+                    <Ionicons name="person" size={20} color={COLORS.primary} />
                 </TouchableOpacity>
             </View>
 
             <View style={styles.content}>
-                <Text style={styles.sectionTitle}>Patient Overview</Text>
+                <View style={styles.welcomeSection}>
+                    <Text style={styles.greeting}>Welcome, Doctor!</Text>
+                    <Text style={styles.subtitle}>Track and assess patient risks easily.</Text>
+                </View>
+
+                <View style={styles.searchContainer}>
+                    <Ionicons name="search" size={20} color={COLORS.textPlaceholder} />
+                    <Text style={styles.searchText}>Search patient records...</Text>
+                </View>
+
+                <Text style={styles.sectionTitle}>Recent Assessments</Text>
 
                 {loading ? (
                     <ActivityIndicator size="large" color={COLORS.primary} style={{ marginTop: 50 }} />
@@ -114,9 +138,12 @@ export default function HomeScreen({ navigation }) {
                                 <Text style={styles.emptySubText}>Calculated risks will appear here.</Text>
                             </View>
                         }
-                        contentContainerStyle={{ paddingBottom: 20 }}
+                        contentContainerStyle={{ paddingBottom: 100 }}
                     />
                 )}
+            </View>
+            <View style={styles.bottomWave}>
+                <WaveBackground color={COLORS.primary} inverted={false} />
             </View>
         </SafeAreaView>
     );
@@ -132,23 +159,18 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: 22,
-        paddingTop: 20,
-        paddingBottom: 20,
+        paddingTop: 10,
+        paddingBottom: 10,
     },
-    greeting: {
-        fontSize: 24,
-        fontWeight: '700',
-        color: COLORS.textHeader,
+    headerLogo: {
+        width: 100,
+        height: 40,
     },
-    subtitle: {
-        fontSize: 14,
-        color: COLORS.textSub,
-    },
-    notificationButton: {
+    profileCircle: {
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: COLORS.white,
+        backgroundColor: '#F8F9FA',
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 1,
@@ -158,6 +180,37 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: 22,
     },
+    welcomeSection: {
+        marginTop: 10,
+        marginBottom: 20,
+    },
+    greeting: {
+        fontSize: 26,
+        fontWeight: '800',
+        color: COLORS.textHeader,
+        letterSpacing: -0.5,
+    },
+    subtitle: {
+        fontSize: 14,
+        color: COLORS.textSub,
+        marginTop: 4,
+    },
+    searchContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#F8F9FA',
+        borderRadius: 12,
+        paddingHorizontal: 15,
+        height: 50,
+        marginBottom: 25,
+        borderWidth: 1,
+        borderColor: '#E8ECF4',
+    },
+    searchText: {
+        marginLeft: 10,
+        color: COLORS.textPlaceholder,
+        fontSize: 14,
+    },
     sectionTitle: {
         fontSize: 18,
         fontWeight: '700',
@@ -166,58 +219,68 @@ const styles = StyleSheet.create({
     },
     card: {
         backgroundColor: COLORS.white,
-        borderRadius: 12,
-        padding: 15,
+        borderRadius: 16,
+        padding: 16,
         marginBottom: 15,
         borderWidth: 1,
         borderColor: '#E8ECF4',
         shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.05,
-        shadowRadius: 5,
-        elevation: 2,
+        shadowRadius: 8,
+        elevation: 3,
     },
     cardHeader: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-start',
-        marginBottom: 10,
+        marginBottom: 12,
     },
     patientName: {
-        fontSize: 16,
-        fontWeight: '600',
+        fontSize: 17,
+        fontWeight: '700',
         color: COLORS.textHeader,
     },
     archiveNo: {
-        fontSize: 12,
+        fontSize: 13,
         color: COLORS.textSub,
         marginTop: 2,
     },
     riskBadge: {
-        paddingHorizontal: 10,
-        paddingVertical: 4,
-        borderRadius: 12,
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 20,
     },
     riskText: {
         fontSize: 12,
-        fontWeight: '700',
+        fontWeight: '800',
+        textTransform: 'uppercase',
     },
     cardDetails: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         borderTopWidth: 1,
-        borderTopColor: '#F5F5F5',
-        paddingTop: 10,
+        borderTopColor: '#F8F9FA',
+        paddingTop: 12,
     },
     detailText: {
         fontSize: 13,
         color: COLORS.textSub,
-        fontWeight: '500',
+        fontWeight: '600',
+    },
+    bottomWave: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: -1,
+        height: 100,
+        opacity: 0.6,
     },
     emptyState: {
         alignItems: 'center',
         justifyContent: 'center',
-        paddingTop: 100,
+        paddingTop: 60,
     },
     emptyText: {
         fontSize: 16,

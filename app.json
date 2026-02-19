@@ -23,6 +23,12 @@
             "backgroundColor": "#ffffff",
             "display": "standalone",
             "pwa": {
+                "name": "MİD-DEC Risk Calculator",
+                "shortName": "MİD-DEC",
+                "themeColor": "#81B7C3",
+                "backgroundColor": "#FFFFFF",
+                "display": "standalone",
+                "orientation": "portrait",
                 "apple": {
                     "mobileWebAppCapable": "yes",
                     "barStyle": "black-translucent",

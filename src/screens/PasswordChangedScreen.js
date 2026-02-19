@@ -9,6 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import COLORS from '../constants/colors';
+import WaveBackground from '../components/WaveBackground';
 
 export default function PasswordChangedScreen({ navigation }) {
     return (
@@ -37,6 +38,9 @@ export default function PasswordChangedScreen({ navigation }) {
                     </LinearGradient>
                 </TouchableOpacity>
             </View>
+            <View style={styles.bottomWave}>
+                <WaveBackground color={COLORS.primary} inverted={false} />
+            </View>
         </SafeAreaView>
     );
 }
@@ -50,23 +54,28 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingHorizontal: 50,
+        paddingHorizontal: 40,
+        paddingBottom: 50,
     },
     successIconContainer: {
         marginBottom: 35,
+        shadowColor: COLORS.success,
+        shadowOffset: { width: 0, height: 10 },
+        shadowOpacity: 0.2,
+        shadowRadius: 20,
     },
     title: {
         fontSize: 30,
-        fontWeight: '700',
+        fontWeight: '800',
         color: COLORS.textHeader,
         textAlign: 'center',
         marginBottom: 10,
     },
     subTitle: {
-        fontSize: 16,
+        fontSize: 15,
         color: COLORS.textSub,
         textAlign: 'center',
-        lineHeight: 24,
+        lineHeight: 22,
         marginBottom: 40,
     },
     buttonWrapper: {
@@ -74,13 +83,22 @@ const styles = StyleSheet.create({
     },
     button: {
         height: 56,
-        borderRadius: 8,
+        borderRadius: 12,
         justifyContent: 'center',
         alignItems: 'center',
     },
     buttonText: {
         color: COLORS.white,
         fontSize: 15,
-        fontWeight: '600',
+        fontWeight: '700',
+    },
+    bottomWave: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: -1,
+        height: 100,
+        opacity: 0.5,
     },
 });

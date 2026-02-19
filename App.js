@@ -49,40 +49,38 @@ function MainTabNavigator() {
                         iconName = focused ? 'home' : 'home-outline';
                     } else if (route.name === 'Calculator') {
                         return (
-                            <Ionicons
-                                name="calculator"
-                                size={32}
-                                color={COLORS.white}
-                                style={{
-                                    backgroundColor: COLORS.primaryDark,
-                                    borderRadius: 30,
-                                    width: 60,
-                                    height: 60,
-                                    textAlign: 'center',
-                                    lineHeight: 60,
-                                    marginBottom: 30,
-                                    shadowColor: COLORS.primaryDark,
-                                    shadowOffset: { width: 0, height: 4 },
-                                    shadowOpacity: 0.3,
-                                    shadowRadius: 10,
-                                }}
-                            />
+                            <View style={styles.calculatorTabContainer}>
+                                <Ionicons
+                                    name="calculator"
+                                    size={30}
+                                    color={COLORS.white}
+                                />
+                            </View>
                         );
                     } else if (route.name === 'Profile') {
                         iconName = focused ? 'person' : 'person-outline';
                     }
 
-                    return <Ionicons name={iconName} size={24} color={color} />;
+                    return <Ionicons name={iconName} size={26} color={color} />;
                 },
             })}
         >
-            <Tab.Screen name="Home" component={HomeScreen} />
+            <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: 'Home' }} />
             <Tab.Screen
                 name="Calculator"
                 component={InputScreen}
-                options={{ tabBarLabel: '' }}
+                options={{
+                    tabBarLabel: '',
+                    tabBarButton: (props) => (
+                        <TouchableOpacity
+                            {...props}
+                            activeOpacity={0.8}
+                            style={{ top: -20 }}
+                        />
+                    )
+                }}
             />
-            <Tab.Screen name="Profile" component={ProfileScreen} />
+            <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarLabel: 'Profile' }} />
         </Tab.Navigator>
     );
 }
@@ -136,5 +134,18 @@ const styles = StyleSheet.create({
         // iOS PWA Safe Area Support
         paddingTop: Platform.OS === 'web' ? 'env(safe-area-inset-top)' : 0,
         paddingBottom: Platform.OS === 'web' ? 'env(safe-area-inset-bottom)' : 0,
+    },
+    calculatorTabContainer: {
+        backgroundColor: COLORS.primaryDark,
+        borderRadius: 30,
+        width: 60,
+        height: 60,
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowColor: COLORS.primaryDark,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.4,
+        shadowRadius: 12,
+        elevation: 8,
     }
 });

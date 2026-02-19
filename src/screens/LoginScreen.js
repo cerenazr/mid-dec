@@ -28,6 +28,13 @@ export default function LoginScreen({ navigation }) {
             </View>
 
             <View style={styles.content}>
+                <View style={styles.logoContainer}>
+                    <Image
+                        source={require('../../assets/logo.png')}
+                        style={styles.logo}
+                        resizeMode="contain"
+                    />
+                </View>
                 <Text style={styles.title}>Welcome back!</Text>
 
                 <View style={styles.form}>
@@ -134,7 +141,15 @@ const styles = StyleSheet.create({
     content: {
         flex: 1,
         paddingHorizontal: 30,
-        paddingTop: 30,
+        paddingTop: 10,
+    },
+    logoContainer: {
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    logo: {
+        width: 150,
+        height: 150,
     },
     title: {
         fontSize: 30,
@@ -142,7 +157,8 @@ const styles = StyleSheet.create({
         color: COLORS.textHeader,
         lineHeight: 39,
         letterSpacing: -0.3,
-        marginBottom: 40,
+        marginBottom: 20,
+        textAlign: 'center',
     },
     form: {
         gap: 15,

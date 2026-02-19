@@ -10,6 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import COLORS from '../constants/colors';
 import WaveBackground from '../components/WaveBackground';
+import CustomGauge from '../components/CustomGauge';
 
 const { width } = Dimensions.get('window');
 
@@ -33,8 +34,14 @@ export default function ResultScreen({ route, navigation }) {
                 </Text>
 
                 <View style={styles.resultContainer}>
-                    <View style={[styles.progressCircle, { borderColor: risk === 'High' ? '#EA4335' : '#18C07A' }]}>
-                        <Text style={styles.scoreText}>%{score}</Text>
+                    <View style={styles.gaugeContainer}>
+                        <CustomGauge
+                            percentage={score}
+                            size={160}
+                            strokeWidth={15}
+                            fontSize={32}
+                            riskLevel={risk}
+                        />
                     </View>
 
                     <View style={[styles.riskBadge, { backgroundColor: risk === 'High' ? 'rgba(234, 67, 53, 0.1)' : 'rgba(24, 192, 122, 0.1)' }]}>
@@ -112,19 +119,10 @@ const styles = StyleSheet.create({
         marginTop: 40,
         width: '100%',
     },
-    progressCircle: {
-        width: 140,
-        height: 140,
-        borderRadius: 70,
-        borderWidth: 10,
+    gaugeContainer: {
+        marginBottom: 30,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 30,
-    },
-    scoreText: {
-        fontSize: 32,
-        fontWeight: '800',
-        color: COLORS.textHeader,
     },
     riskBadge: {
         flexDirection: 'row',

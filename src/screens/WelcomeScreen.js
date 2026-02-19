@@ -14,7 +14,11 @@ export default function WelcomeScreen({ navigation }) {
             {/* Blue Top Section */}
             <View style={styles.topSection}>
                 <View style={styles.logoCircle}>
-                    <Ionicons name="fitness" size={80} color={COLORS.primary} />
+                    <Image
+                        source={require('../../assets/logo.png')}
+                        style={styles.logoImage}
+                        resizeMode="contain"
+                    />
                 </View>
                 <Text style={styles.appName}>MID-DEC</Text>
                 <Text style={styles.appSub}>Mobile Calculation</Text>
@@ -72,6 +76,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 15,
+        overflow: 'hidden',
+    },
+    logoImage: {
+        width: 100,
+        height: 100,
     },
     appName: {
         fontSize: 28,
