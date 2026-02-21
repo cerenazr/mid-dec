@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Platform, StyleSheet } from 'react-native';
+import { useState, useEffect } from 'react';
+import { View, Platform, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -17,6 +17,11 @@ import InputScreen from './src/screens/InputScreen';
 import ResultScreen from './src/screens/ResultScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
+import NotificationScreen from './src/screens/NotificationScreen';
+
+import { useFonts } from 'expo-font';
+import { auth } from './src/services/firebaseConfig';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -27,41 +32,32 @@ function MainTabNavigator() {
             screenOptions={({ route }) => ({
                 headerShown: false,
                 tabBarStyle: {
-                    height: 70,
-                    paddingBottom: 10,
-                    paddingTop: 10,
+                    height: 65,
+                    paddingBottom: 5,
                     borderTopWidth: 1,
                     borderTopColor: '#E8ECF4',
-                    elevation: 0,
-                    backgroundColor: '#FFFFFF',
+                    overflow: 'visible',
                 },
                 tabBarActiveTintColor: COLORS.primaryDark,
                 tabBarInactiveTintColor: COLORS.textSub,
                 tabBarShowLabel: true,
                 tabBarLabelStyle: {
                     fontSize: 10,
-                    fontWeight: '500',
+                    fontWeight: '600',
+                    marginBottom: 5,
                 },
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
 
                     if (route.name === 'Home') {
-                        iconName = focused ? 'home' : 'home-outline';
-                    } else if (route.name === 'Calculator') {
-                        return (
-                            <View style={styles.calculatorTabContainer}>
-                                <Ionicons
-                                    name="calculator"
-                                    size={30}
-                                    color={COLORS.white}
-                                />
-                            </View>
-                        );
+                        iconName = focused ? 'sparkles' : 'sparkles-outline';
                     } else if (route.name === 'Profile') {
                         iconName = focused ? 'person' : 'person-outline';
+                    } else {
+                        return null;
                     }
 
-                    return <Ionicons name={iconName} size={26} color={color} />;
+                    return <Ionicons name={iconName} size={24} color={color} />;
                 },
             })}
         >
@@ -73,26 +69,74 @@ function MainTabNavigator() {
                     tabBarLabel: '',
                     tabBarButton: (props) => (
                         <TouchableOpacity
-                            {...props}
+                            onPress={props.onPress}
                             activeOpacity={0.8}
-                            style={{ top: -20 }}
-                        />
+                            style={{
+                                flex: 1,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                top: -20,
+                            }}
+                        >
+                            <View style={styles.calculatorTabContainer}>
+                                <Ionicons name="calculator" size={30} color={COLORS.white} />
+                            </View>
+                        </TouchableOpacity>
                     )
                 }}
             />
-            <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarLabel: 'Profile' }} />
+            <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarLabel: 'You' }} />
         </Tab.Navigator>
     );
 }
 
 export default function App() {
+    const [fontsLoaded] = useFonts({
+        ...Ionicons.font,
+    });
+
+    // undefined = loading, null = logged out, object = logged in
+    const [user, setUser] = useState(undefined);
+
+    useEffect(() => {
+        // Timeout fallback: if onAuthStateChanged never fires in 4s, default to logged out
+        const timeout = setTimeout(() => {
+            setUser(prev => prev === undefined ? null : prev);
+        }, 4000);
+
+        let unsubscribe = () => {};
+        try {
+            unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+                clearTimeout(timeout);
+                setUser(firebaseUser);
+            });
+        } catch (e) {
+            clearTimeout(timeout);
+            setUser(null);
+        }
+
+        return () => {
+            unsubscribe();
+            clearTimeout(timeout);
+        };
+    }, []);
+
+    // Show loading spinner while fonts or auth state are not ready
+    if (!fontsLoaded || user === undefined) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#81B7C3" />
+            </View>
+        );
+    }
+
     return (
         <View style={styles.webContainer}>
             <View style={styles.appContainer}>
                 <NavigationContainer>
                     <StatusBar style="auto" />
                     <Stack.Navigator
-                        initialRouteName="Welcome"
+                        initialRouteName={user ? 'MainTabs' : 'Welcome'}
                         screenOptions={{
                             headerShown: false,
                             cardStyle: { backgroundColor: '#FFFFFF' }
@@ -107,6 +151,7 @@ export default function App() {
                         <Stack.Screen name="MainTabs" component={MainTabNavigator} />
                         <Stack.Screen name="Input" component={InputScreen} />
                         <Stack.Screen name="Result" component={ResultScreen} />
+                        <Stack.Screen name="Notifications" component={NotificationScreen} />
                     </Stack.Navigator>
                 </NavigationContainer>
             </View>
@@ -115,37 +160,46 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#FFFFFF',
+    },
     webContainer: {
         flex: 1,
-        backgroundColor: '#F5F5F5',
+        backgroundColor: '#F8F9FA',
         flexDirection: 'row',
         justifyContent: 'center',
     },
     appContainer: {
         flex: 1,
         width: '100%',
-        maxWidth: 500,
+        maxWidth: 480, // Mobile width for desktop
         backgroundColor: '#FFFFFF',
+        // Support for shadow on desktop
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: { width: 0, height: 10 },
         shadowOpacity: 0.1,
-        shadowRadius: 10,
-        elevation: 5,
-        // iOS PWA Safe Area Support
-        paddingTop: Platform.OS === 'web' ? 'env(safe-area-inset-top)' : 0,
+        shadowRadius: 20,
+        elevation: 10,
+        overflow: 'hidden',
+        // Handle iOS PWA Safe Area
         paddingBottom: Platform.OS === 'web' ? 'env(safe-area-inset-bottom)' : 0,
     },
     calculatorTabContainer: {
         backgroundColor: COLORS.primaryDark,
-        borderRadius: 30,
-        width: 60,
-        height: 60,
+        borderRadius: 35,
+        width: 70,
+        height: 70,
         justifyContent: 'center',
         alignItems: 'center',
+        borderWidth: 4,
+        borderColor: '#FFFFFF',
         shadowColor: COLORS.primaryDark,
-        shadowOffset: { width: 0, height: 4 },
+        shadowOffset: { width: 0, height: 8 },
         shadowOpacity: 0.4,
-        shadowRadius: 12,
-        elevation: 8,
+        shadowRadius: 15,
+        elevation: 10,
     }
 });

@@ -1,20 +1,41 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
     StyleSheet,
     View,
     Text,
     TextInput,
     TouchableOpacity,
-    Dimensions
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import COLORS from '../constants/colors';
 import WaveBackground from '../components/WaveBackground';
+import { auth } from '../services/firebaseConfig';
+import { sendPasswordResetEmail } from 'firebase/auth';
 
 export default function ForgotPasswordScreen({ navigation }) {
     const [email, setEmail] = useState('');
+    const [sent, setSent] = useState(false);
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const handleSendReset = async () => {
+        if (!email) {
+            setError('Please enter your email address.');
+            return;
+        }
+        setLoading(true);
+        setError('');
+        try {
+            await sendPasswordResetEmail(auth, email.trim());
+            setSent(true);
+        } catch (e) {
+            setError('Email not found. Please check and try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -30,28 +51,52 @@ export default function ForgotPasswordScreen({ navigation }) {
                     Don't worry! It occurs. Please enter the email address linked with your account.
                 </Text>
 
-                <View style={styles.form}>
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Enter your email"
-                            placeholderTextColor={COLORS.textPlaceholder}
-                            value={email}
-                            onChangeText={setEmail}
-                        />
+                {sent ? (
+                    <View style={styles.successBox}>
+                        <Ionicons name="checkmark-circle" size={48} color={COLORS.primary} />
+                        <Text style={styles.successTitle}>Email Sent!</Text>
+                        <Text style={styles.successText}>
+                            A password reset link has been sent to {email}. Check your inbox.
+                        </Text>
+                        <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.backToLoginBtn}>
+                            <LinearGradient
+                                colors={[COLORS.primary, COLORS.primaryDark]}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 0 }}
+                                style={styles.submitButton}
+                            >
+                                <Text style={styles.submitButtonText}>Back to Login</Text>
+                            </LinearGradient>
+                        </TouchableOpacity>
                     </View>
+                ) : (
+                    <View style={styles.form}>
+                        <View style={styles.inputContainer}>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Enter your email"
+                                placeholderTextColor={COLORS.textPlaceholder}
+                                value={email}
+                                onChangeText={setEmail}
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                            />
+                        </View>
 
-                    <TouchableOpacity onPress={() => navigation.navigate('OTPScreen')}>
-                        <LinearGradient
-                            colors={[COLORS.primary, COLORS.primaryDark]}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 0 }}
-                            style={styles.submitButton}
-                        >
-                            <Text style={styles.submitButtonText}>Send Code</Text>
-                        </LinearGradient>
-                    </TouchableOpacity>
-                </View>
+                        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+                        <TouchableOpacity onPress={handleSendReset} disabled={loading}>
+                            <LinearGradient
+                                colors={[COLORS.primary, COLORS.primaryDark]}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 0 }}
+                                style={styles.submitButton}
+                            >
+                                <Text style={styles.submitButtonText}>{loading ? 'Sending...' : 'Send Reset Link'}</Text>
+                            </LinearGradient>
+                        </TouchableOpacity>
+                    </View>
+                )}
 
                 <View style={styles.footer}>
                     <Text style={styles.footerText}>Remember Password? </Text>
@@ -134,6 +179,33 @@ const styles = StyleSheet.create({
         color: COLORS.white,
         fontSize: 15,
         fontWeight: '700',
+    },
+    errorText: {
+        color: '#EA4335',
+        fontSize: 13,
+        fontWeight: '600',
+        textAlign: 'center',
+        marginTop: -8,
+    },
+    successBox: {
+        alignItems: 'center',
+        gap: 12,
+        width: '100%',
+    },
+    successTitle: {
+        fontSize: 22,
+        fontWeight: '800',
+        color: COLORS.textHeader,
+    },
+    successText: {
+        fontSize: 14,
+        color: COLORS.textSub,
+        textAlign: 'center',
+        lineHeight: 21,
+    },
+    backToLoginBtn: {
+        width: '100%',
+        marginTop: 8,
     },
     footer: {
         flexDirection: 'row',

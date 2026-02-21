@@ -29,6 +29,12 @@
                 "backgroundColor": "#FFFFFF",
                 "display": "standalone",
                 "orientation": "portrait",
+                "icon": "./assets/icon.png",
+                "splash": {
+                    "image": "./assets/splash.png",
+                    "resizeMode": "contain",
+                    "backgroundColor": "#ffffff"
+                },
                 "apple": {
                     "mobileWebAppCapable": "yes",
                     "barStyle": "black-translucent",
